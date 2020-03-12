@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="html_main" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Login page</title>
+    <h:outputStylesheet library="css" name="styles7.css"/>
+</h:head>
+<h:body id="main_body" onload="loadTable()">
+
+    <div class="container">
+
+        <p:remoteCommand name="loadTable" render=":results :drawer"/>
+
+        <div id="header_div">
+            <h:form>
+                <h:commandButton value="На стартовую страницу" class="button" action="home?faces-redirect=true"/>
+            </h:form>
+            <h1>Симулятор рыбалки</h1>
+        </div>
+
+        <div id="content">
+
+            <div id="main_photo_div">
+                <h:form id="graph" prependId="true">
+                    <canvas id="canvas" width="300" height="300">
+                    </canvas>
+                    <h:inputHidden name="xCanvas" id="xCanvas" value="#{us.xCanvas}"/>
+                    <h:inputHidden name="yCanvas" id="yCanvas" value="#{us.yCanvas}"/>
+                    <p:remoteCommand process="@this" name="addFromGraph" action="#{us.addPointFromGraph()}"
+                                     update=":results :drawer :fish :fishName"/>
+                </h:form>
+
+                <div class="center">
+                    #{us.r}
+                    <h:dataTable value="#{us.fishingPoints}" var="fp"
+                                 styleClass="order-table"
+                                 headerClass="order-table-header"
+                                 rowClasses="order-table-odd-row,order-table-even-row"
+                                 id="results" rows="10">
+                        <h:column>
+                            <f:facet name="header">
+                                X
+                            </f:facet>
+                            #{fp.x}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Y
+                            </f:facet>
+                            #{fp.y}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                R
+                            </f:facet>
+                            #{fp.r}
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">
+                                Hit
+                            </f:facet>
+                            #{fp.hited}
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </div>
+
+            <h:inputHidden id="rValue" value="#{us.r}"/>
+            <div style="float: right; width: 60%">
+                <h:form prependId="true">
+                    <div>
+                        <table cellpadding="10" class="auto-margin">
+                            <tr>
+                                <td colspan="9">
+                                    <h3>Выберите силу броска по X (<h:outputText value="#{us.x}"/>)</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h:commandLink action="#{us.setX(-3)}">-3
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(-2)}">-2
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(-1)}">-1
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(0)}">0
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(1)}">1
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(2)}">2
+                                        <f:ajax/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(3)}">3
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(4)}">4
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandLink>
+                                </td>
+                                <td>
+                                    <h:commandLink action="#{us.setX(5)}">5
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandLink>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h3>Выберите силу броска по Y (<h:outputText id="yOutput" value="#{us.y}"/>)</h3> <br/>
+                        <h:inputText id="yInput" name="yInput" value="#{us.y}"
+                                     validatorMessage="Сначала введите число от -3 до 3"
+                                     converterMessage="Сначала введите число от -3 до 3 (Для обозначения дроби используйте точку)"
+                                     maxlength="5">
+                            <f:validateDoubleRange minimum="-3" maximum="3" for="yInput"/>
+                            <f:ajax render="yOutput" event="keyup"/>
+                        </h:inputText><br/>
+                        <h:message for="yInput"
+                                   style="color:hotpink">Сначала введите число от -3 до 3 (Для обозначения дроби используйте точку)</h:message>
+                    </div>
+
+                    <div>
+                        <h3>Выберите размеры водоёма (<h:outputText id="r_output" value="#{us.r}"/>)</h3><br/>
+                        <h:commandButton id="r1" class="button" value="1" action="#{us.setR(1)}" onclick="changeR(1)">
+                            <f:ajax execute="@form" render="@form :drawer"/>
+                        </h:commandButton>
+                        <h:commandButton id="r2" class="button" value="2" action="#{us.setR(2)}" onclick="changeR(2)">
+                            <f:ajax execute="@form" render="@form :drawer"/>
+                        </h:commandButton>
+                        <h:commandButton id="r3" class="button" value="3" action="#{us.setR(3)}" onclick="changeR(3)">
+                            <f:ajax execute="@form" render="@form :drawer"/>
+                        </h:commandButton>
+                        <h:commandButton id="r4" class="button" value="4" action="#{us.setR(4)}" onclick="changeR(4)">
+                            <f:ajax execute="@form" render="@form :drawer"/>
+                        </h:commandButton>
+                        <h:commandButton id="r5" class="button" value="5" action="#{us.setR(5)}" onclick="changeR(5)">
+                            <f:ajax execute="@form" render="@form :drawer"/>
+                        </h:commandButton>
+                    </div>
+                    <h:commandButton value="Бросить удочку" action="#{us.addPointFromForm}"
+                                     class="button">
+                        <f:ajax execute="@form" render=":results :drawer :fish :fishName"/>
+                    </h:commandButton>
+                </h:form>
+                <div id="catchedFish" class="auto-margin" style="margin-top: 20px; width: 200px; height: 200px; background-color: lightseagreen">
+                    <h:graphicImage id="fish" width="200" height="200" value="#{us.image}"/>
+                </div>
+                <h:outputText id="fishName" value="#{us.fishName}"></h:outputText>
+            </div>
+        </div>
+    </div>
+    <div style="display: none">
+        <h:dataTable value="#{us.fishingPoints}" var="fp" id="drawer">
+            <h:column>
+                <f:facet name="drawMe">Drawing</f:facet>
+                <h:outputScript>#{fp.draw(us.r)}</h:outputScript>
+            </h:column>
+        </h:dataTable>
+    </div>
+    <h:outputScript library="js" name="graph34.js"/>
+</h:body>
+</html>

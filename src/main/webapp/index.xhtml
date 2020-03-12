@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="html_main" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>First JSF Application</title>
+    <h:outputStylesheet library="css" name="styles7.css"/>
+    <h:outputScript library="js" name="clocks2.js"/>
+</h:head>
+<h:body id="main_body">
+    <div id="main_home_div" class="auto-margin">
+        <div id="header_home_div">
+            <h3>#{helloWorld.message}</h3>
+            <h3>Вариант 20290</h3>
+        </div>
+        <div id="clock">
+        </div>
+
+        <div id="center_home_div" class="auto-margin">
+            <h:form>
+                <h:commandButton value="Login" action="login?faces-redirect=true"/>
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>
